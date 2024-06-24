@@ -82,7 +82,7 @@ const Charts = () => {
 
   return (
     <div>
-      <h2>Event Data</h2>
+      <h2 style={{fontWeight: 'bold', marginBottom: 10, textAlign: 'center'}}>Events</h2>
       <div
         style={{
           display: "flex",

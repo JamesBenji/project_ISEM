@@ -14,6 +14,7 @@ import Print from "./_components/print-pdf";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { FcDocument } from "react-icons/fc";
+import { FaBell } from "react-icons/fa";
 
 import {
   Sheet,
@@ -40,9 +41,97 @@ const Admin = async () => {
 
   const totalEvents = await db.event.count();
 
+  const pending = events?.filter(
+    (event) => !event.status || event.status === "PENDING"
+  )?.length;
+
   return (
     <div className=" p-6 space-y-4">
       <FormSuccess message={"Welcome back, " + user.name + " !"} />
+
+      <Sheet>
+        <SheetTrigger style={{ display: 'flex',}} className="w-full">
+          <div style={{marginLeft: 'auto', marginRight: 4}}>
+            <div>
+            <FaBell size={26} />
+            <div
+              style={{
+                position: "relative",
+                right: -10,
+                bottom: 14,
+                background: "red",
+                color: "white",
+                width: 15,
+                height: 15,
+                borderRadius: '50%',
+                display: "flex",
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: 10
+              }}
+            >
+              {pending}
+            </div>
+            </div>
+          </div>
+        </SheetTrigger>
+        <SheetContent className=" ">
+          <SheetHeader>
+            <SheetTitle>Events Pending Review</SheetTitle>
+            <SheetDescription>
+              These are the events that are pending review
+            </SheetDescription>
+          </SheetHeader>
+          <div>
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Name
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Date
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Status
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {events
+                  .filter(
+                    (event) => !event.status || event.status === "PENDING"
+                  )
+                  .map((event) => (
+                    <tr key={event.id}>
+                      <Link
+                        href={`/admin/events/${event.id}`}
+                        className=" bg-slate-200 rounded-md p-2"
+                      >
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">
+                            {event.name}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">
+                            {event.date?.toString()}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">
+                            {event.status || "PENDING"}
+                          </div>
+                        </td>
+                      </Link>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+        </SheetContent>
+      </Sheet>
+
       <div>
         <Charts />
       </div>
